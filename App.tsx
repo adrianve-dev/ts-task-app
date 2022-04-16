@@ -43,7 +43,7 @@ export default function App() {
         <Text>theme backgroundColor: {theme.backgroundColor}</Text>
         <StatusBar style="auto" />
       </View>
-      <View style={styles.list}>
+      <View>
         <FlatList<ReadonlyTask | CompletedTask>
             data={DATA}
             renderItem={renderItem}
@@ -65,8 +65,4 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15,
   },
-  list: {
-    flex: 1,
-    alignItems: 'flex-start',
-  }
 });

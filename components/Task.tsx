@@ -2,18 +2,17 @@ import { TaskProps, CompletedTaskProps, ReadonlyTask as ReadonlyTaskType, Comple
 import { Text, View } from './Themed'
 import styles from '../styles'
 import { placeToString } from '../utils/utils';
+import { getPlaceElement } from './Place';
 
 export const Task = (props: TaskProps) => {
     const { style, task, ...otherProps } = props
     
     return (
       <View style={[styles.taskList]}>
-        <Text style={[{fontSize: 18,}]}>
+        <Text style={[styles.fontSubtitle]}>
             {task.text}
         </Text>
-        <Text style={[styles.place, {color: '#ccc', fontSize: 14,}]} >
-            {task.place && placeToString(task.place as Place)}
-        </Text>
+        {getPlaceElement(task.place as Place)}
       </View>
     );
 }
@@ -23,12 +22,10 @@ export const CompletedTask = (props: CompletedTaskProps) => {
     
     return (
       <View style={[styles.taskList]}>
-        <Text style={[styles.completedTask, {fontSize: 18, alignItems: 'flex-start'}]} >
+        <Text style={[styles.completedTask, styles.fontMain]} >
             {task.text}
         </Text>
-        <Text style={[styles.place, {fontSize: 14, alignItems: 'flex-start'}]} >
-            {task.place && placeToString(task.place as Place)}
-        </Text>
+        {task.place && getPlaceElement(task.place as Place)}
       </View>
     );
   }
