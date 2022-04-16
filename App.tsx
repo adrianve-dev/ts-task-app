@@ -37,13 +37,7 @@ export default function App() {
   
   return (
     <SafeAreaView style={[styles.container, {backgroundColor:'#282c34'}]}>
-      <View style={ styles.header }>
-        <Text>Open up App.tsx to start working on your app!</Text>
-        <Text>theme color: {theme.color}</Text>
-        <Text>theme backgroundColor: {theme.backgroundColor}</Text>
-        <StatusBar style="auto" />
-      </View>
-      <View>
+      <View style={styles.list}>
         <FlatList<ReadonlyTask | CompletedTask>
             data={DATA}
             renderItem={renderItem}
@@ -65,4 +59,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 15,
   },
+  list: {
+    flex: 1,
+  }
 });

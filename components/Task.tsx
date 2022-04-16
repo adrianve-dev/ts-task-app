@@ -1,7 +1,6 @@
 import { TaskProps, CompletedTaskProps, ReadonlyTask as ReadonlyTaskType, CompletedTask as CompletedTaskType, Place } from '../types';
 import { Text, View } from './Themed'
 import styles from '../styles'
-import { placeToString } from '../utils/utils';
 import { getPlaceElement } from './Place';
 
 export const Task = (props: TaskProps) => {
@@ -9,7 +8,7 @@ export const Task = (props: TaskProps) => {
     
     return (
       <View style={[styles.taskList]}>
-        <Text style={[styles.fontSubtitle]}>
+        <Text style={[styles.fontMain]}>
             {task.text}
         </Text>
         {getPlaceElement(task.place as Place)}
