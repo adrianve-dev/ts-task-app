@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { FlatList, ListRenderItem, SafeAreaView, StyleSheet, Text as DefaultText, View as DefaultView } from 'react-native';
+import { FlatList, ListRenderItem, SafeAreaView, StyleSheet } from 'react-native';
 import { Text, View } from './components/Themed'
 import useTheme from './hooks/useTheme';
-import { ReadonlyTask } from './types';
+import { CompletedTask, ReadonlyTask } from './types';
+import { getTaskElement } from './components/Task'
 
 export default function App() {  
   const theme = useTheme()
@@ -24,21 +25,15 @@ export default function App() {
       text: 'Hit all PRs',
       done: false,
     },
+    {
+      id: 3,
+      text: 'Hit all PRs',
+      done: true,
+      place: { custom: 'gym' },
+    },
   ];
-  
-  const Task = (props: DefaultView['props'] & DefaultText['props'] & { task: ReadonlyTask }) => {
-    const { style, task, ...otherProps } = props
-    
-    return (
-      <View>
-        <Text>{task.text}</Text>
-      </View>
-    );
-  }
 
-  const renderItem: ListRenderItem<ReadonlyTask> = ({ item }) => (
-    <Task task={item}  />
-  );
+  const renderItem: ListRenderItem<ReadonlyTask | CompletedTask> = ({ item }) => getTaskElement(item)
   
   return (
     <SafeAreaView style={[styles.container, {backgroundColor:'#282c34'}]}>
@@ -49,7 +44,7 @@ export default function App() {
         <StatusBar style="auto" />
       </View>
       <View style={styles.list}>
-        <FlatList<ReadonlyTask>
+        <FlatList<ReadonlyTask | CompletedTask>
             data={DATA}
             renderItem={renderItem}
           >
@@ -62,19 +57,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'flex-start',
   },
   header: {
     flex: 0,
     alignItems: 'center',
-    justifyContent: 'flex-start',
     marginTop: 15,
     marginBottom: 15,
   },
   list: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start'
+    alignItems: 'flex-start',
   }
 });

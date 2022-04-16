@@ -1,3 +1,5 @@
+import { Text as DefaultText, View as DefaultView } from 'react-native';
+
 export type Place = 'home' | 'work' | { custom: string }
 
 export type Task = {
@@ -19,3 +21,7 @@ export type ReadonlyTask = Readonly<Task>
 export type CompletedTask = ReadonlyTask & {
     readonly done: true
 }
+
+export type DefaultViewTextProps = DefaultView['props'] & DefaultText['props']
+export type TaskProps = DefaultViewTextProps & { task: ReadonlyTask }
+export type CompletedTaskProps = DefaultViewTextProps & { task: CompletedTask }
