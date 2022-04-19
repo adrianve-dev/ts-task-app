@@ -4,11 +4,11 @@ import { getPlaceElement } from './Place'
 import { Swipeable } from 'react-native-gesture-handler'
 import { Alert, Pressable } from 'react-native'
 import SwipeButton from './SwipeButton'
-import styles from '../styles'
+import { colors, styles } from '../styles'
 
 const LeftSwipeAction = () => {
     return (
-        <View style={[{alignItems: 'flex-end', justifyContent: 'center', backgroundColor:'#7f7', paddingLeft: 30, paddingRight: 30,}]}>
+        <View style={[{alignItems: 'flex-end', justifyContent: 'center', backgroundColor:colors.paleGreen, paddingLeft: 30, paddingRight: 30,}]}>
             <Text>
                 ✔
             </Text>
@@ -19,8 +19,8 @@ const LeftSwipeAction = () => {
 const RightSwipeButtons = () => {
     return (
         <>
-            <SwipeButton onPress={() => Alert.alert('Item deleted')} text={'🗑'} backgroundColor='#f77' ></SwipeButton>
-            <SwipeButton onPress={() => Alert.alert('Editing Item')} text={'✏'} ></SwipeButton>
+            <SwipeButton onPress={() => Alert.alert('Item deleted')} text={'🗑'} backgroundColor={colors.paleRed} ></SwipeButton>
+            <SwipeButton onPress={() => Alert.alert('Editing Item')} text={'✏'} backgroundColor={colors.palePurple} ></SwipeButton>
         </>
     )
 }
@@ -39,7 +39,7 @@ export const Task = (props: TaskProps & {toggle: Function}) => {
                 renderRightActions={RightSwipeButtons}
             >
                 <Pressable onPress={() => Alert.alert('Task Pressed')}>
-                    <View style={[styles.taskList, {flex: 1}]}>
+                    <View style={[styles.taskList]}>
                         <Text style={[styles.fontMain]}>
                             {task.text}
                         </Text>
@@ -63,7 +63,7 @@ export const CompletedTask = (props: CompletedTaskProps & {toggle: Function}) =>
             onSwipeableLeftWillOpen={swipeFromLeftOpen}
             renderRightActions={RightSwipeButtons}
         >
-            <View style={[styles.taskList, {flex: 1}]}>
+            <View style={[styles.taskList]}>
                 <Text style={[styles.completedTask, styles.fontMain]} >
                     {task.text}
                 </Text>

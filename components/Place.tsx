@@ -1,6 +1,6 @@
 import { DefaultViewTextProps, Place as PlaceType, PlaceProps } from "../types"
 import { Text, View } from './Themed'
-import styles from '../styles'
+import { styles } from '../styles'
 import { placeToString } from '../utils/utils';
 
 

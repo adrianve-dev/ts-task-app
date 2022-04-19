@@ -1,8 +1,25 @@
 import { StyleSheet } from "react-native"
 
-const styles = StyleSheet.create({
+export const appStyles = {
+    swipeButtonPadding: 30,
+}
+
+export const colors = {
+    blue: '#0d6efd',
+    completedTask: '#888',
+    dark: '#222',
+    muted: '#ccc',
+    paleGreen: '#7f7',
+    palePurple: '#77f',
+    paleRed: '#f77',
+    reactDarkBackground: '#282c34',
+    reactLightBackground: '#61dafb',
+    red: '#dc3545',
+}
+
+export const styles = StyleSheet.create({
     completedTask: {
-        color: '#888',
+        color: colors.completedTask,
         textDecorationLine: 'line-through', 
         textDecorationStyle: 'solid',
     },
@@ -17,8 +34,8 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         paddingTop: 5,
         paddingBottom: 5,
-        color: '#ccc',
-        backgroundColor: '#222', 
+        color: colors.muted,
+        backgroundColor: colors.dark, 
         borderRadius: 15, 
         overflow: 'hidden', 
         textAlign: 'center', 
@@ -31,5 +48,3 @@ const styles = StyleSheet.create({
         fontSize: 14,
     }
 })
-
-export default styles

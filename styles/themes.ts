@@ -1,3 +1,5 @@
+import { colors } from './'
+
 //#region TS TYPES
 
 type Theme = {
@@ -34,11 +36,11 @@ const DefaultTheme: FullTheme = {
 const ReactTheme: FullTheme = {
     light: {
         color: 'black',
-        backgroundColor: '#61dafb',
+        backgroundColor: colors.reactDarkBackground,
     },
     dark: {
         color: 'white',
-        backgroundColor: '#282c34',
+        backgroundColor: colors.reactDarkBackground,
     }
 }
 
