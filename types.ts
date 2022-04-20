@@ -22,6 +22,9 @@ export type CompletedTask = ReadonlyTask & {
     readonly done: true
 }
 
+export type StoredTask = {[key: string]: ReadonlyTask}
+export type StoredCompletedTask = {[key: string]: CompletedTask}
+
 export type DefaultViewTextProps = DefaultView['props'] & DefaultText['props']
 export type TaskProps = DefaultViewTextProps & { task: ReadonlyTask }
 export type PlaceProps = DefaultViewTextProps & { place?: Place }
