@@ -22,12 +22,13 @@ export const asyncAddTask = async (task: ReadonlyTask) => {
     }
 }
 
-export const asyncUpdateTask = async (tasks: ReadonlyTask[]) => {
+export const asyncUpdateTasks = async (tasks: StoredTask):Promise<StoredTask | null | undefined> => {
     try {
-        return await AsyncStorage.setItem(TASKS_STORAGE_KEY,
+        await AsyncStorage.setItem(TASKS_STORAGE_KEY,
             JSON.stringify(tasks))
+        return getStoredTasks()
     } catch (e) {
-        Alert.alert('Failed to update Task') 
+        Alert.alert('Failed to update Tasks') 
     }
 }
 
@@ -40,11 +41,12 @@ export const asyncCompleteTask = async (task: CompletedTask) => {
 }
 
 const saveTask = async (task: ReadonlyTask) => {
-    return await AsyncStorage.mergeItem(TASKS_STORAGE_KEY,
+    await AsyncStorage.mergeItem(TASKS_STORAGE_KEY,
         JSON.stringify({
             [task.id.toString()]: task
         })
     )
+    return getStoredTasks()
 }
 
 export const getTaskCount = async (): Promise<number | null | undefined> => {

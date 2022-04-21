@@ -5,11 +5,10 @@ import { CompletedTask, ReadonlyTask, StoredTask } from '../types'
 import { getTaskElement } from '../components/Task'
 import { toggleTask } from '../utils/utils'
 import { BorderlessButton } from 'react-native-gesture-handler'
-import { asyncAddTask } from '../utils/api'
+import { asyncDeleteData } from '../utils/api'
 import { colors } from '../styles'
-import { getCount, updateCount, updateCountManually, getTasks } from '../redux'
+import { getCount, updateCount, updateCountManually, getTasks, addTask, updateTasks } from '../redux'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
-import { Store } from 'redux'
 
 export default function Main() {
   // key: number but storedKeys stored as key: string
@@ -24,17 +23,17 @@ export default function Main() {
   
   console.log('allStoredTasks: ', allStoredTasks)
   console.log('taskCount: ', taskCount)
-  // asyncDeleteData()
+//   asyncDeleteData()
 
-  const addTask = async () => {
+  const addTaskToStore = async () => {
     // assume null/undefined mean no tasks
     const id: number = taskCount !== null && typeof taskCount !== 'undefined' ? taskCount : 0
-    await asyncAddTask({
-      id: id,
-      text: `This is new task #${id}`,
-      done: false,
-    })
 
+    dispatch(addTask({
+        id: id,
+        text: `This is new task #${id}`,
+        done: false,
+      } as ReadonlyTask))
     dispatch(updateCount())
     setTaskAdded(true)
   }
@@ -90,9 +89,7 @@ export default function Main() {
         }
       }
 
-    //   const allTasks: StoredTask = Object.assign({}, tasks, allStoredTasks)
       dispatch(getCount())
-    //   if(Object.keys(allTasks).length > Object.keys(tasks).length) setTasks(allTasks)
     }
     initData()
   }, [])
@@ -121,7 +118,7 @@ export default function Main() {
           </FlatList> 
           : <View style={[{flex: 1, alignItems: 'center', paddingTop: 60}]}><Text style={{fontSize: 18}}>No Tasks</Text></View>}
         </View>
-        <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => addTask()} >
+        <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => addTaskToStore()} >
           <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'blue', borderRadius: 10,}]}>
                   <Text style={{fontSize: 18}}>
                       Add Task

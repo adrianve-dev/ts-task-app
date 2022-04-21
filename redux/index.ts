@@ -1,7 +1,7 @@
 import { configureStore, createAsyncThunk, createSlice, MiddlewareArray, PayloadAction } from "@reduxjs/toolkit"
 import { ReadonlyTask, StoredTask } from "../types"
 import thunk, { ThunkMiddleware } from 'redux-thunk'
-import { asyncUpdateTaskCount, getStoredTasks, getTaskCount } from "../utils/api"
+import { asyncUpdateTasks, asyncUpdateTaskCount, getStoredTasks, getTaskCount, asyncAddTask } from "../utils/api"
 
 
 interface TasksState {
@@ -12,12 +12,37 @@ const taskState = {
     tasks: null
 } as TasksState
 
-export const getTasks = createAsyncThunk<StoredTask | null | undefined>(
-    'tasks/get',
+export const getTasks = createAsyncThunk<
+    StoredTask | null | undefined
+>('tasks/get',
     async (thunkAPI) => {
         return await getStoredTasks()
     }
 )
+
+export const updateTasks = createAsyncThunk<
+    StoredTask | null | undefined,
+    StoredTask | null | undefined
+>('tasks/update',
+    async(tasks, thunkAPI) => {
+        return await asyncUpdateTasks(tasks as StoredTask)
+    }
+)
+
+export const addTask = createAsyncThunk<
+    StoredTask | null | undefined,
+    ReadonlyTask
+>('tasks/add',
+   async (task, thunkAPI) => {
+       return await asyncAddTask(task)
+   }
+)
+
+const setTaskState = (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
+    if(typeof action.payload !== 'undefined' && action.payload !== null)
+        return action.payload
+    return null
+}
 
 const taskSlice = createSlice({
     name: 'tasks',
@@ -30,11 +55,6 @@ const taskSlice = createSlice({
                 [id.toString()]: {id, text, done, place},
             }
         },
-        update: (state, action: PayloadAction<StoredTask>) => {
-            state = {
-                'tasks': {...action.payload}
-            }
-        },
         toggle: (state, action: PayloadAction<ReadonlyTask>) => {
             if(typeof action.payload !== 'undefined' && action.payload !== null)
                 if(state.tasks !== null && typeof state.tasks !== 'undefined') 
@@ -44,12 +64,20 @@ const taskSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
             if(typeof action.payload !== 'undefined' && action.payload !== null)
-                    state.tasks = action.payload
+                    state.tasks = setTaskState(state, action)
+        }),
+        builder.addCase(addTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
+            if(typeof action.payload !== 'undefined' && action.payload !== null)
+                    state.tasks = setTaskState(state, action)
+        }),
+        builder.addCase(updateTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
+            if(typeof action.payload !== 'undefined' && action.payload !== null)
+                    state.tasks = setTaskState(state, action)
         })
     }
 })
 
-export const { add, update, /* toggle */ } = taskSlice.actions
+export const { add } = taskSlice.actions
 export const taskReducer = taskSlice.reducer
 
 interface CountState {
@@ -81,6 +109,10 @@ export const updateCountManually = createAsyncThunk<
     }
 )
 
+const setCountState = (state:CountState, action: PayloadAction<number | null | undefined>) => {
+    return typeof action.payload !== 'undefined' ? action.payload : null
+}
+
 const countSlice = createSlice({
     name: 'count',
     initialState: countState,
@@ -88,15 +120,15 @@ const countSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getCount.fulfilled, (state:CountState, action: PayloadAction<number | null | undefined>) => {
                 if(typeof action.payload !== 'undefined')
-                    state.count = action.payload
+                    state.count = setCountState(state, action)
             }),
         builder.addCase(updateCount.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
             if(typeof action.payload !== 'undefined')
-                state.count = action.payload
+                state.count = setCountState(state, action)
         })),
         builder.addCase(updateCountManually.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
             if(typeof action.payload !== 'undefined')
-                state.count = action.payload
+                state.count = setCountState(state, action)
         }))
     }
 })
