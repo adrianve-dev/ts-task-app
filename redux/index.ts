@@ -1,21 +1,28 @@
 import { configureStore, createAsyncThunk, createSlice, MiddlewareArray, PayloadAction } from "@reduxjs/toolkit"
 import { ReadonlyTask, StoredTask } from "../types"
 import thunk, { ThunkMiddleware } from 'redux-thunk'
-import { asyncUpdateTaskCount, getTaskCount } from "../utils/api"
+import { asyncUpdateTaskCount, getStoredTasks, getTaskCount } from "../utils/api"
 
 
-const tasksState = {} as StoredTask
+interface TasksState {
+    tasks: StoredTask | null | undefined
+}
+
+const taskState = { 
+    tasks: null
+} as TasksState
+
+export const getTasks = createAsyncThunk<StoredTask | null | undefined>(
+    'tasks/get',
+    async (thunkAPI) => {
+        return await getStoredTasks()
+    }
+)
 
 const taskSlice = createSlice({
     name: 'tasks',
-    initialState: tasksState,
+    initialState: taskState,
     reducers: {
-        get: (state, action: PayloadAction<StoredTask>) => {
-                state = { 
-                    ...state,
-                    ...action.payload
-                }
-        },
         add: (state, action: PayloadAction<ReadonlyTask>) => {
             const { id, text, done, place } = action.payload
             state = {
@@ -25,25 +32,24 @@ const taskSlice = createSlice({
         },
         update: (state, action: PayloadAction<StoredTask>) => {
             state = {
-                ...action.payload
+                'tasks': {...action.payload}
             }
         },
         toggle: (state, action: PayloadAction<ReadonlyTask>) => {
-            const { id, text, done, place } = action.payload
-            const key = id.toString()
-            state = {
-                ...state,
-                [key]: {
-                    ...state[key],
-                    done,
-                }
-            }
+            if(typeof action.payload !== 'undefined' && action.payload !== null)
+                if(state.tasks !== null && typeof state.tasks !== 'undefined') 
+                    state.tasks[action.payload.id] = action.payload
         }
-
+    },
+    extraReducers: (builder) => {
+        builder.addCase(getTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
+            if(typeof action.payload !== 'undefined' && action.payload !== null)
+                    state.tasks = action.payload
+        })
     }
 })
 
-export const { get, add, update, toggle } = taskSlice.actions
+export const { add, update, /* toggle */ } = taskSlice.actions
 export const taskReducer = taskSlice.reducer
 
 interface CountState {

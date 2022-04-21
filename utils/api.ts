@@ -1,11 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { ReadonlyTask, CompletedTask } from '../types';
+import { ReadonlyTask, CompletedTask, StoredTask } from '../types';
 
 export const TASKS_STORAGE_KEY = 'adrianve::tasks'
 export const TASK_COUNTER = 'adrianve::counter'
 
-export const getStoredTasks = async () => {
+export const getStoredTasks = async ():Promise<StoredTask | null | undefined> => {
     try {
         const jsonValue = await AsyncStorage.getItem(TASKS_STORAGE_KEY)
         return jsonValue !== null ? JSON.parse(jsonValue) : null
