@@ -1,6 +1,8 @@
-import { configureStore, createSlice, MiddlewareArray, PayloadAction } from "@reduxjs/toolkit"
+import { configureStore, createAsyncThunk, createSlice, MiddlewareArray, PayloadAction } from "@reduxjs/toolkit"
 import { ReadonlyTask, StoredTask } from "../types"
-import thunk from 'redux-thunk'
+import thunk, { ThunkMiddleware } from 'redux-thunk'
+import { asyncUpdateTaskCount, getTaskCount } from "../utils/api"
+
 
 const tasksState = {} as StoredTask
 
@@ -45,26 +47,54 @@ export const { get, add, update, toggle } = taskSlice.actions
 export const taskReducer = taskSlice.reducer
 
 interface CountState {
-    count: number
+    count: number | null
 }
 
 const countState = { count: 0 } as CountState
 
+export const getCount = createAsyncThunk<number | null | undefined>(
+    'count/getCount',
+    async (thunkAPI) => {
+        return await getTaskCount()
+    }
+)
+
+export const updateCount = createAsyncThunk<number | null | undefined>(
+    'count/updateCount',
+    async (thunkAPI) => {
+        return await asyncUpdateTaskCount()
+    }
+)
+
+export const updateCountManually = createAsyncThunk<
+    number | null | undefined,
+    string
+>('count/updateCountManually',
+    async (count, thunkAPI) => {
+        return await asyncUpdateTaskCount(count)
+    }
+)
+
 const countSlice = createSlice({
     name: 'count',
     initialState: countState,
-    reducers: {
-        getCount(state, action: PayloadAction<number>) {
-            action.payload
-        },
-        updateCount(state, action: PayloadAction<number>) {
-            action.payload
-        }
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(getCount.fulfilled, (state:CountState, action: PayloadAction<number | null | undefined>) => {
+                if(typeof action.payload !== 'undefined')
+                    state.count = action.payload
+            }),
+        builder.addCase(updateCount.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
+            if(typeof action.payload !== 'undefined')
+                state.count = action.payload
+        })),
+        builder.addCase(updateCountManually.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
+            if(typeof action.payload !== 'undefined')
+                state.count = action.payload
+        }))
     }
-
 })
 
-export const { getCount, updateCount } = countSlice.actions
 export const countReducer = countSlice.reducer
 
 export const store = configureStore({
@@ -72,7 +102,7 @@ export const store = configureStore({
         tasks: taskReducer,
         count: countReducer,
     },
-    middleware: new MiddlewareArray().concat(thunk)
+    middleware: new MiddlewareArray().concat(thunk as ThunkMiddleware)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -65,15 +65,16 @@ export const asyncUpdateTaskCount = async (taskCount?: string) => {
     try {
         // set manual
         if(taskCount && Number(taskCount) >= 0) {
-            return await AsyncStorage.setItem(TASK_COUNTER, taskCount)
+            await AsyncStorage.setItem(TASK_COUNTER, taskCount)
+        } else {
+            // increment
+            const jsonValue = await AsyncStorage.getItem(TASK_COUNTER)
+            // assumes null because of no entry
+            const count = jsonValue !== null ? parseInt(jsonValue) : 0 
+            const value = (count + 1).toString()
+            await AsyncStorage.setItem(TASK_COUNTER, value)
         }
-
-        // increment
-        const jsonValue = await AsyncStorage.getItem(TASK_COUNTER)
-        // assumes null because of no entry
-        const count = jsonValue !== null ? parseInt(jsonValue) : 0 
-        const value = (count + 1).toString()
-        return await AsyncStorage.setItem(TASK_COUNTER, value)
+        return getTaskCount()
     } catch (e) {
         Alert.alert('Failed to update task count') 
     }
