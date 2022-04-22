@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FlatList, ListRenderItem, ListRenderItemInfo, SafeAreaView, StyleSheet } from 'react-native'
+import { FlatList, ListRenderItem, ListRenderItemInfo, Pressable, SafeAreaView, StyleSheet } from 'react-native'
 import { Text, View } from '../components/Themed'
 import { CompletedTask, ReadonlyTask, StoredCompletedTask, StoredTask } from '../types'
 import { getTaskElement } from '../components/Task'
@@ -122,15 +122,15 @@ export default function Main() {
           </FlatList> 
           : <View style={[{flex: 1, alignItems: 'center', paddingTop: 60}]}><Text style={{fontSize: 18}}>No Tasks</Text></View>}
         </View>
-        <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => completeAllTasks()} >
-          <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'blue', borderRadius: 10,}]}>
-                <Text style={{fontSize: 18}}>
+        <Pressable style={{flex:1, margin: 10}} onPress={() => completeAllTasks()} >
+          <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: 10,}]}>
+                <Text style={{fontSize: 18, color: colors.blue}}>
                     Mark all as Complete
                 </Text>
             </View>
-        </BorderlessButton>
+        </Pressable>
         <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => addTaskToStore()} >
-          <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'blue', borderRadius: 10,}]}>
+          <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.blue, borderRadius: 10,}]}>
                 <Text style={{fontSize: 18}}>
                     Add Task
                 </Text>
