@@ -7,7 +7,7 @@ import { toggleTask } from '../utils/utils'
 import { BorderlessButton } from 'react-native-gesture-handler'
 import { asyncDeleteData } from '../utils/api'
 import { colors } from '../styles'
-import { getCount, updateCount, updateCountManually, getTasks, addTask, updateTasks } from '../redux'
+import { getCount, updateCount, updateCountManually, getTasks, addTask, updateTasks, completeTask, updateTask } from '../redux'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 
 export default function Main() {
@@ -51,12 +51,9 @@ export default function Main() {
 
   const handleToggleTask = (task: ReadonlyTask) => {
     const updatedTask: ReadonlyTask = toggleTask(task)
-    const updatedTasks: ReadonlyTask[] = formatData(tasks).map((t) => {
-      if(t.id === task.id) return updatedTask
-      else return t
-    })
     
-    setTasks(updatedTasks)
+    if(updatedTask.done) dispatch(completeTask(updatedTask as CompletedTask))
+    else dispatch(updateTask(updatedTask))
   }
 
   // update state on add task

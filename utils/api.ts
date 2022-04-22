@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { ReadonlyTask, CompletedTask, StoredTask } from '../types';
+import { ReadonlyTask, CompletedTask, StoredTask, StoredCompletedTask } from '../types';
 
 export const TASKS_STORAGE_KEY = 'adrianve::tasks'
 export const TASK_COUNTER = 'adrianve::counter'
+
+//#region Tasks
 
 export const getStoredTasks = async ():Promise<StoredTask | null | undefined> => {
     try {
@@ -22,7 +24,7 @@ export const asyncAddTask = async (task: ReadonlyTask) => {
     }
 }
 
-export const asyncUpdateTasks = async (tasks: StoredTask):Promise<StoredTask | null | undefined> => {
+export const asyncUpdateTasks = async (tasks: StoredTask): Promise<StoredTask | null | undefined> => {
     try {
         await AsyncStorage.setItem(TASKS_STORAGE_KEY,
             JSON.stringify(tasks))
@@ -32,11 +34,29 @@ export const asyncUpdateTasks = async (tasks: StoredTask):Promise<StoredTask | n
     }
 }
 
-export const asyncCompleteTask = async (task: CompletedTask) => {
+export const asyncStoreAllCompletedTasks = async (tasks: StoredCompletedTask): Promise<StoredTask | null | undefined> => {
+    try {
+        await AsyncStorage.setItem(TASKS_STORAGE_KEY,
+            JSON.stringify(tasks))
+        return getStoredTasks()
+    } catch (e) {
+        Alert.alert('Failed to update completed Tasks')
+    }
+}
+
+export const asyncStoreCompletedTask = async (task: CompletedTask): Promise<StoredTask | null | undefined> => {
     try {
         return await saveTask(task)
     } catch (e) {
-        Alert.alert('Failed to add Task')
+        Alert.alert('Failed to complete Task')
+    }
+}
+
+export const asyncUpdateTask = async (task: ReadonlyTask): Promise<StoredTask | null | undefined> => {
+    try {
+        return await saveTask(task)
+    } catch (e) {
+        Alert.alert('Failed to update Task')
     }
 }
 
@@ -48,6 +68,10 @@ const saveTask = async (task: ReadonlyTask) => {
     )
     return getStoredTasks()
 }
+
+//#endregion
+
+//#region Task Count
 
 export const getTaskCount = async (): Promise<number | null | undefined> => {
     try {
@@ -81,5 +105,7 @@ export const asyncUpdateTaskCount = async (taskCount?: string) => {
         Alert.alert('Failed to update task count') 
     }
 }
+
+//#endregion 
 
 export const asyncDeleteData = async () => await AsyncStorage.clear()

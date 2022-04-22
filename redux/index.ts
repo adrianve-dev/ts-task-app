@@ -1,7 +1,7 @@
 import { configureStore, createAsyncThunk, createSlice, MiddlewareArray, PayloadAction } from "@reduxjs/toolkit"
-import { ReadonlyTask, StoredTask } from "../types"
+import { ReadonlyTask, CompletedTask, StoredTask } from "../types"
 import thunk, { ThunkMiddleware } from 'redux-thunk'
-import { asyncUpdateTasks, asyncUpdateTaskCount, getStoredTasks, getTaskCount, asyncAddTask } from "../utils/api"
+import { asyncUpdateTasks, asyncUpdateTaskCount, getStoredTasks, getTaskCount, asyncAddTask, asyncUpdateTask, asyncStoreCompletedTask } from "../utils/api"
 
 
 interface TasksState {
@@ -23,7 +23,7 @@ export const getTasks = createAsyncThunk<
 export const updateTasks = createAsyncThunk<
     StoredTask | null | undefined,
     StoredTask | null | undefined
->('tasks/update',
+>('tasks/updateAll',
     async(tasks, thunkAPI) => {
         return await asyncUpdateTasks(tasks as StoredTask)
     }
@@ -37,6 +37,22 @@ export const addTask = createAsyncThunk<
        return await asyncAddTask(task)
    }
 )
+
+export const updateTask = createAsyncThunk<
+    StoredTask | null | undefined,
+    ReadonlyTask
+>('tasks/update',
+    async (task, thunkAPI) => {
+        return await asyncUpdateTask(task)
+    })
+
+export const completeTask = createAsyncThunk<
+    StoredTask | null | undefined,
+    CompletedTask
+>('tasks/complete',
+    async (task, thunkAPI) => {
+        return await asyncStoreCompletedTask(task)
+    })
 
 const setTaskState = (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
     if(typeof action.payload !== 'undefined' && action.payload !== null)
@@ -63,16 +79,19 @@ const taskSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            if(typeof action.payload !== 'undefined' && action.payload !== null)
-                    state.tasks = setTaskState(state, action)
+            state.tasks = setTaskState(state, action)
         }),
         builder.addCase(addTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            if(typeof action.payload !== 'undefined' && action.payload !== null)
-                    state.tasks = setTaskState(state, action)
+            state.tasks = setTaskState(state, action)
         }),
         builder.addCase(updateTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            if(typeof action.payload !== 'undefined' && action.payload !== null)
-                    state.tasks = setTaskState(state, action)
+            state.tasks = setTaskState(state, action)
+        }),
+        builder.addCase(updateTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
+            state.tasks = setTaskState(state, action)
+        }),
+        builder.addCase(completeTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
+            state.tasks = setTaskState(state, action)
         })
     }
 })
