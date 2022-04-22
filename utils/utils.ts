@@ -1,4 +1,4 @@
-import { Place, ReadonlyTask, CompletedTask } from "../types";
+import { Place, ReadonlyTask, CompletedTask, StoredCompletedTask, StoredTask } from "../types";
 
 //#region PLACE
 
@@ -12,13 +12,19 @@ export const placeToString = (place: Place): string => {
 
 //#region TASK
 
-export const completeAll = (tasks: readonly ReadonlyTask[]): CompletedTask[] => {
-    // We want it to return a new array
-    // instead of modifying the original array
-    return tasks.map(task => ({
-        ...task,
-        done: true
-    }))
+export const completeAll = (tasks: StoredTask): StoredCompletedTask => {
+    const keys: string[] = Object.keys(tasks)
+    let completedTasks: StoredCompletedTask = {}
+    keys.forEach((k) => {
+        const t = tasks[k]
+        completedTasks = Object.assign(completedTasks, {
+            [t.id.toString()]: {
+                ...t,
+                done: true
+            }
+        } as StoredCompletedTask)
+    })
+    return completedTasks
 }
 
 export const deleteTask = (tasks: readonly ReadonlyTask[], task: ReadonlyTask): ReadonlyTask[] => {

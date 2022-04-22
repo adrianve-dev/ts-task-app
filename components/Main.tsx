@@ -1,13 +1,13 @@
 import * as React from 'react'
 import { FlatList, ListRenderItem, ListRenderItemInfo, SafeAreaView, StyleSheet } from 'react-native'
 import { Text, View } from '../components/Themed'
-import { CompletedTask, ReadonlyTask, StoredTask } from '../types'
+import { CompletedTask, ReadonlyTask, StoredCompletedTask, StoredTask } from '../types'
 import { getTaskElement } from '../components/Task'
-import { toggleTask } from '../utils/utils'
+import { completeAll, toggleTask } from '../utils/utils'
 import { BorderlessButton } from 'react-native-gesture-handler'
 import { asyncDeleteData } from '../utils/api'
 import { colors } from '../styles'
-import { getCount, updateCount, updateCountManually, getTasks, addTask, updateTasks, completeTask, updateTask } from '../redux'
+import { getCount, updateCount, updateCountManually, getTasks, addTask, updateTasks, completeTask, updateTask, allCompletedTasks } from '../redux'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 
 export default function Main() {
@@ -35,7 +35,14 @@ export default function Main() {
         done: false,
       } as ReadonlyTask))
     dispatch(updateCount())
-    setTaskAdded(true)
+    // setTaskAdded(true)
+  }
+
+  const completeAllTasks = async () => {
+      if(allStoredTasks !== null && typeof allStoredTasks !== 'undefined') {
+        const completedTasks: StoredCompletedTask = completeAll(allStoredTasks)
+        if(completedTasks) dispatch(allCompletedTasks(completedTasks))
+      }
   }
 
   const formatData = (data: {[key: string]: ReadonlyTask} | null | undefined): ReadonlyTask[] => {
@@ -115,13 +122,20 @@ export default function Main() {
           </FlatList> 
           : <View style={[{flex: 1, alignItems: 'center', paddingTop: 60}]}><Text style={{fontSize: 18}}>No Tasks</Text></View>}
         </View>
+        <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => completeAllTasks()} >
+          <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'blue', borderRadius: 10,}]}>
+                <Text style={{fontSize: 18}}>
+                    Mark all as Complete
+                </Text>
+            </View>
+        </BorderlessButton>
         <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => addTaskToStore()} >
           <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'blue', borderRadius: 10,}]}>
-                  <Text style={{fontSize: 18}}>
-                      Add Task
-                  </Text>
-              </View>
-            </BorderlessButton>
+                <Text style={{fontSize: 18}}>
+                    Add Task
+                </Text>
+            </View>
+        </BorderlessButton>
       </SafeAreaView>
   );
 }
