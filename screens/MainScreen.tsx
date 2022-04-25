@@ -9,8 +9,12 @@ import { asyncDeleteData } from '../utils/api'
 import { colors } from '../styles'
 import { getCount, updateCount, updateCountManually, getTasks, addTask, updateTasks, completeTask, updateTask, allCompletedTasks } from '../redux'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../App'
 
-export default function Main() {
+type AppProps = NativeStackScreenProps<RootStackParamList, 'Tasks'>
+
+export default function MainScreen({navigation, route} : AppProps) {
   // key: number but storedKeys stored as key: string
   // handleToggleTask throws type error when change above to : string 
   const [tasks, setTasks] = React.useState<{[key:number]: ReadonlyTask}>({
@@ -26,16 +30,7 @@ export default function Main() {
 //   asyncDeleteData()
 
   const addTaskToStore = async () => {
-    // assume null/undefined mean no tasks
-    const id: number = taskCount !== null && typeof taskCount !== 'undefined' ? taskCount : 0
-
-    dispatch(addTask({
-        id: id,
-        text: `This is new task #${id}`,
-        done: false,
-      } as ReadonlyTask))
-    dispatch(updateCount())
-    // setTaskAdded(true)
+    navigation.navigate('AddTask')
   }
 
   const completeAllTasks = async () => {
