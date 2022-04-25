@@ -7,10 +7,15 @@ const WORK_TEXT = 'work'
 const HOME_DISPLAY = '🏡 Home'
 const WORK_DISPLAY = '💼 Work'
 
-export const placeToString = (place: Place): string => {
+export const placeToDisplayString = (place: Place): string => {
     if(place === HOME_TEXT) return HOME_DISPLAY
     else if(place === WORK_TEXT) return WORK_DISPLAY
     else return `📍 ${place.custom.slice(0,1).toUpperCase()}${place.custom.slice(1).toLowerCase()}`
+}
+
+export const placeToString = (place: Place): string => {
+    if(typeof place === 'string') return place.toLowerCase()
+    else return place.custom.toLowerCase()
 }
 
 export const stringToPlace = (place: string): Place => {

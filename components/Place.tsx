@@ -1,7 +1,7 @@
 import { DefaultViewTextProps, Place as PlaceType, PlaceProps } from "../types"
 import { Text, View } from './Themed'
 import { styles } from '../styles'
-import { placeToString } from '../utils/utils';
+import { placeToDisplayString } from '../utils/utils';
 
 
 
@@ -21,7 +21,7 @@ export const Place = (props: PlaceProps) => {
     return (        
         <View style={{alignItems:'center'}}>
             <Text style={[styles.place, styles.fontSubtitle]} >
-                {place && placeToString(place)}
+                {place && placeToDisplayString(place)}
             </Text>
         </View>
     )
