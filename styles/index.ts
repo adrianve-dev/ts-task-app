@@ -46,5 +46,13 @@ export const styles = StyleSheet.create({
     },
     fontSubtitle: {
         fontSize: 14,
+    },
+    input: {
+        marginBottom: 20,
+        marginLeft: 30,
+        marginRight: 30,
+        borderWidth: 1,
+        borderColor:'transparent',
+        padding:20
     }
 })
