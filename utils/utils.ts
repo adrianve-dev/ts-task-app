@@ -2,10 +2,22 @@ import { Place, ReadonlyTask, CompletedTask, StoredCompletedTask, StoredTask } f
 
 //#region PLACE
 
+const HOME_TEXT = 'home'
+const WORK_TEXT = 'work'
+const HOME_DISPLAY = '🏡 Home'
+const WORK_DISPLAY = '💼 Work'
+
 export const placeToString = (place: Place): string => {
-    if(place === 'home') return '🏡 Home'
-    else if(place === 'work') return '💼 Work'
+    if(place === HOME_TEXT) return HOME_DISPLAY
+    else if(place === WORK_TEXT) return WORK_DISPLAY
     else return `📍 ${place.custom.slice(0,1).toUpperCase()}${place.custom.slice(1).toLowerCase()}`
+}
+
+export const stringToPlace = (place: string): Place => {
+    const normalizedPlace = place.toLowerCase()
+    if(normalizedPlace === HOME_TEXT) return HOME_TEXT
+    else if(normalizedPlace === WORK_TEXT) return WORK_TEXT
+    else return { custom: normalizedPlace }
 }
 
 //#endregion

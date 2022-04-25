@@ -1,5 +1,5 @@
 import { configureStore, createAsyncThunk, createSlice, MiddlewareArray, PayloadAction } from "@reduxjs/toolkit"
-import { ReadonlyTask, CompletedTask, StoredTask, StoredCompletedTask } from "../types"
+import { ReadonlyTask, CompletedTask, StoredTask, StoredCompletedTask, Place } from "../types"
 import thunk, { ThunkMiddleware } from 'redux-thunk'
 import { asyncUpdateTasks, asyncUpdateTaskCount, getStoredTasks, getTaskCount, asyncAddTask, asyncUpdateTask, asyncStoreCompletedTask, asyncStoreAllCompletedTasks } from "../utils/api"
 
@@ -31,10 +31,10 @@ export const updateTasks = createAsyncThunk<
 
 export const addTask = createAsyncThunk<
     StoredTask | null | undefined,
-    string
+    { task: string, place: string }
 >('tasks/add',
-   async (task, thunkAPI) => {
-       return await asyncAddTask(task)
+   async (args, thunkAPI) => {
+       return await asyncAddTask(args.task, args.place)
    }
 )
 

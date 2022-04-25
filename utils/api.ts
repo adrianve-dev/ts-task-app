@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { ReadonlyTask, CompletedTask, StoredTask, StoredCompletedTask } from '../types';
+import { ReadonlyTask, CompletedTask, StoredTask, StoredCompletedTask, Place } from '../types';
+import { stringToPlace } from './utils';
 
 export const TASKS_STORAGE_KEY = 'adrianve::tasks'
 export const TASK_COUNTER = 'adrianve::counter'
@@ -16,15 +17,25 @@ export const getStoredTasks = async ():Promise<StoredTask | null | undefined> =>
     }
 }
 
-export const asyncAddTask = async (task: string) => {
+export const asyncAddTask = async (task: string, place?: string) => {
     try {
         const count = await getTaskCount()
         if(count !== null && typeof count !== 'undefined') {
-            const tasks = await saveTask({
-                id: count + 1,
-                text: task,
-                done: false,
-            })
+            const id = count + 1
+            const newTask = place && typeof place !== 'undefined' 
+                ? {
+                    id,
+                    text: task,
+                    done: false,
+                    place: stringToPlace(place),
+                }
+                : {
+                    id,
+                    text: task,
+                    done: false,
+                }
+
+            const tasks = await saveTask(newTask)
             // update task count on add
             await asyncUpdateTaskCount()
             return tasks

@@ -1,18 +1,24 @@
-import { useState } from "react"
-import { KeyboardAvoidingView, Keyboard, Platform } from "react-native"
+import { useRef, useState } from "react"
+import { KeyboardAvoidingView, StyleSheet, Platform } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
+import { Text } from "../components/Themed"
 import { useAppDispatch } from "../hooks/reduxHooks"
 import useTheme from "../hooks/useTheme"
 import { addTask } from "../redux"
-import { styles } from "../styles"
+import { colors, styles as myStyles } from "../styles"
+
 
 export default function AddTaskScreen() {
-    const [text, setText] = useState<string>('')
+    const [taskText, setTaskText] = useState<string>('')
+    const [placeText, setPlaceText] = useState<string>('')
     const theme = useTheme()
     const dispatch = useAppDispatch()
+    const placeInput = useRef<TextInput>(null)
 
-    const addToStore = (text: string) => {
-        if(text) dispatch(addTask(text))
+    // TODO: add place to db
+
+    const addToStore = () => {
+        if(taskText) dispatch(addTask({task: taskText, place: placeText}))
     }
 
     return (
@@ -20,13 +26,33 @@ export default function AddTaskScreen() {
             behavior={Platform.OS === "ios" ? "padding" : "height"} 
             style={[{flex:1, backgroundColor: theme.backgroundColor,}]}
         >
-                <TextInput 
-                    style={[styles.fontMain, {color: theme.color ,margin: 30, borderWidth: 1, borderColor:'transparent', borderBottomColor: theme.color, padding:20}]} 
-                    placeholder={'My next task is..'} 
-                    value={text} 
-                    onChangeText={setText} 
-                    onSubmitEditing={(e) => addToStore(e.nativeEvent.text)}
-                />
+            <Text style={[myStyles.fontSubtitle, styles.label, {color:colors.muted}]}>Task:</Text>
+            <TextInput 
+                style={[myStyles.fontMain, myStyles.input, {color: theme.color, borderBottomColor: theme.color}]} 
+                autoFocus={true}
+                placeholder={'My next task is..'} 
+                value={taskText}
+                returnKeyType='next'
+                onChangeText={setTaskText} 
+                onSubmitEditing={() => placeInput.current?.focus()}
+            />
+            <Text style={[myStyles.fontSubtitle, styles.label, {color:colors.muted}]}>Place (Optional):</Text>
+            <TextInput
+                ref={placeInput}
+                style={[myStyles.fontMain, myStyles.input, {color: theme.color, borderBottomColor: theme.color}]} 
+                placeholder={'Where am I completing it?'} 
+                value={placeText} 
+                returnKeyType='done'
+                onChangeText={setPlaceText} 
+                onSubmitEditing={() => addToStore()}
+            />
         </KeyboardAvoidingView>
     )
 }
+
+const styles = StyleSheet.create({
+    label: {
+        margin: 15,
+        marginTop: 30,
+    },
+})
