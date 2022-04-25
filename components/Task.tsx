@@ -5,6 +5,9 @@ import { Swipeable } from 'react-native-gesture-handler'
 import { Alert, Pressable } from 'react-native'
 import SwipeButton from './SwipeButton'
 import { colors, styles } from '../styles'
+import { useNavigation } from '@react-navigation/core';
+import { RootStackParamList } from '../App';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 const LeftSwipeAction = () => {
     return (
@@ -26,6 +29,8 @@ const RightSwipeButtons = () => {
 }
 
 export const Task = (props: TaskProps & {toggle: Function}) => {
+    type AppProps = NativeStackNavigationProp<RootStackParamList, 'EditTask'>
+    const nav = useNavigation<AppProps>()
     const { style, task, toggle, ...otherProps } = props
 
     const swipeFromLeftOpen = () => {
@@ -38,7 +43,7 @@ export const Task = (props: TaskProps & {toggle: Function}) => {
                 onSwipeableLeftWillOpen={swipeFromLeftOpen}
                 renderRightActions={RightSwipeButtons}
             >
-                <Pressable onPress={() => Alert.alert('Task Pressed')}>
+                <Pressable onPress={() => nav.navigate('EditTask', {task: task})}>
                     <View style={[styles.taskList]}>
                         <Text style={[styles.fontMain]}>
                             {task.text}
