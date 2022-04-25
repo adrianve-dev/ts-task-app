@@ -31,7 +31,7 @@ export const updateTasks = createAsyncThunk<
 
 export const addTask = createAsyncThunk<
     StoredTask | null | undefined,
-    ReadonlyTask
+    string
 >('tasks/add',
    async (task, thunkAPI) => {
        return await asyncAddTask(task)

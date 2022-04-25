@@ -16,9 +16,19 @@ export const getStoredTasks = async ():Promise<StoredTask | null | undefined> =>
     }
 }
 
-export const asyncAddTask = async (task: ReadonlyTask) => {
+export const asyncAddTask = async (task: string) => {
     try {
-        return await saveTask(task)
+        const count = await getTaskCount()
+        if(count !== null && typeof count !== 'undefined') {
+            const tasks = await saveTask({
+                id: count + 1,
+                text: task,
+                done: false,
+            })
+            // update task count on add
+            await asyncUpdateTaskCount()
+            return tasks
+        }
     } catch (e) {
         Alert.alert('Failed to add Task')
     }

@@ -11,6 +11,10 @@ export default function AddTaskScreen() {
     const theme = useTheme()
     const dispatch = useAppDispatch()
 
+    const addToStore = (text: string) => {
+        if(text) dispatch(addTask(text))
+    }
+
     return (
         <KeyboardAvoidingView 
             behavior={Platform.OS === "ios" ? "padding" : "height"} 
@@ -21,7 +25,7 @@ export default function AddTaskScreen() {
                     placeholder={'My next task is..'} 
                     value={text} 
                     onChangeText={setText} 
-                    onSubmitEditing={(e) => setText(e.nativeEvent.text)} 
+                    onSubmitEditing={(e) => addToStore(e.nativeEvent.text)}
                 />
         </KeyboardAvoidingView>
     )
