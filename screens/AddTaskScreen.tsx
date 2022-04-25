@@ -15,8 +15,6 @@ export default function AddTaskScreen() {
     const dispatch = useAppDispatch()
     const placeInput = useRef<TextInput>(null)
 
-    // TODO: add place to db
-
     const addToStore = () => {
         if(taskText) dispatch(addTask({task: taskText, place: placeText}))
     }
