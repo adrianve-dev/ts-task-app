@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import { KeyboardAvoidingView, StyleSheet, Platform } from "react-native"
+import { KeyboardAvoidingView, Platform, ColorSchemeName, useColorScheme } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
 import { Text } from "../components/Themed"
 import { useAppDispatch } from "../hooks/reduxHooks"
@@ -14,6 +14,8 @@ type AppProps = NativeStackScreenProps<RootStackParamList, 'AddTask'>
 export default function AddTaskScreen({ navigation, route }: AppProps) {
     const [taskText, setTaskText] = useState<string>('')
     const [placeText, setPlaceText] = useState<string>('')
+
+    const colorScheme = useColorScheme() as NonNullable<ColorSchemeName>
     const theme = useTheme()
     const dispatch = useAppDispatch()
     const placeInput = useRef<TextInput>(null)
@@ -36,6 +38,7 @@ export default function AddTaskScreen({ navigation, route }: AppProps) {
                 autoFocus={true}
                 placeholder={'My next task is..'} 
                 value={taskText}
+                keyboardAppearance={colorScheme}
                 returnKeyType='next'
                 onChangeText={setTaskText} 
                 onSubmitEditing={() => placeInput.current?.focus()}
@@ -45,7 +48,8 @@ export default function AddTaskScreen({ navigation, route }: AppProps) {
                 ref={placeInput}
                 style={[myStyles.fontMain, myStyles.input, {color: theme.color, borderBottomColor: theme.color}]} 
                 placeholder={'Where am I completing it?'} 
-                value={placeText} 
+                value={placeText}
+                keyboardAppearance={colorScheme}
                 returnKeyType='done'
                 onChangeText={setPlaceText} 
                 onSubmitEditing={() => addToStore()}

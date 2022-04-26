@@ -1,5 +1,6 @@
 import { useRef, useState } from "react"
-import { KeyboardAvoidingView, Platform } from "react-native"
+import {  } from "react-native";
+import { KeyboardAvoidingView, Platform, ColorSchemeName, useColorScheme } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
 import { Text } from "../components/Themed"
 import { useAppDispatch } from "../hooks/reduxHooks"
@@ -19,6 +20,7 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
     const [taskText, setTaskText] = useState<string>(task.text)
     const [placeText, setPlaceText] = useState<string>(currentPlace)
 
+    const colorScheme = useColorScheme() as NonNullable<ColorSchemeName>
     const theme = useTheme()
     const dispatch = useAppDispatch()
     const placeInput = useRef<TextInput>(null)
@@ -50,7 +52,7 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
                 placeholder={'My next task is..'} 
                 value={taskText}
                 returnKeyType='next'
-                keyboardAppearance={'dark'}
+                keyboardAppearance={colorScheme}
                 onChangeText={setTaskText} 
                 onSubmitEditing={() => placeInput.current?.focus()}
             />
@@ -61,7 +63,7 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
                 placeholder={'Where am I completing it?'} 
                 value={placeText} 
                 returnKeyType='done'
-                keyboardAppearance={'dark'}
+                keyboardAppearance={colorScheme}
                 onChangeText={setPlaceText} 
                 onSubmitEditing={() => addToStore()}
             />
