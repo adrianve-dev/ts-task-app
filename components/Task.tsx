@@ -10,6 +10,8 @@ import { useNavigation } from '@react-navigation/core'
 import { RootStackParamList } from '../App'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import useTheme from '../hooks/useTheme'
+import { useAppDispatch } from '../hooks/reduxHooks'
+import { deleteTask } from '../redux'
 
 const LeftSwipeAction = () => {
     const icon = Platform.OS === "ios" ? "ios-checkmark-sharp" : "md-checkmark"
@@ -22,6 +24,7 @@ export const Task = (props: TaskProps & {toggle: Function}) => {
     type AppProps = NativeStackNavigationProp<RootStackParamList, 'EditTask'>
     const theme = useTheme()
     const nav = useNavigation<AppProps>()
+    const dispatch = useAppDispatch()
     const { style, task, toggle, ...otherProps } = props
 
     const swipeFromLeftOpen = () => {
@@ -35,7 +38,7 @@ export const Task = (props: TaskProps & {toggle: Function}) => {
                 renderRightActions={() => {
                     return (
                         <>
-                            <SwipeButton onPress={() => Alert.alert('Item deleted')} text={'Delete'} icon={'md-trash'} color={'white'} backgroundColor={colors.paleRed} ></SwipeButton>
+                            <SwipeButton onPress={() => dispatch(deleteTask(task.id))} text={'Delete'} icon={'md-trash'} color={theme.color} backgroundColor={colors.paleRed} ></SwipeButton>
                             <SwipeButton onPress={() => nav.navigate('EditTask', {task: task})} icon={'md-pencil'} text={'Edit'}  color={theme.color} ></SwipeButton>
                         </>
                     )
@@ -56,13 +59,14 @@ export const Task = (props: TaskProps & {toggle: Function}) => {
 export const CompletedTask = (props: CompletedTaskProps & {toggle: Function}) => {
     const { style, task, toggle, ...otherProps } = props
     const theme = useTheme()
+    const dispatch = useAppDispatch()
 
     const swipeFromLeftOpen = () => {
         toggle(task)
     }
 
     const swipeFromRightOpen = () => {
-        Alert.alert('Item deleted')
+        dispatch(deleteTask(task.id))
     }
     
     return (

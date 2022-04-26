@@ -31,7 +31,9 @@ export const addTask = createAsyncThunk<
 >('tasks/add',
    async (args, thunkAPI) => {
        console.log('add task: ', args.task)
-       return await asyncAddTask(args.task, args.place)
+       const tasks = await asyncAddTask(args.task, args.place)
+       thunkAPI.dispatch(getCount())
+       return tasks
    }
 )
 
@@ -59,9 +61,26 @@ export const allCompletedTasks = createAsyncThunk<
         return await asyncStoreAllCompletedTasks(tasks)
     })
 
+export const deleteTask = createAsyncThunk<
+    StoredTask | null | undefined,
+    number,
+    { state: RootState }
+>('tasks/delete',
+    async (id, thunkAPI) => {
+        const { tasks } = thunkAPI.getState()
+        if(tasks !== null && tasks !== undefined){
+            const updatedTasks = Object.assign({}, tasks, {[id]: undefined})
+            if(updatedTasks) {
+                const storedTasks = await asyncUpdateTasks(updatedTasks as StoredTask)
+                return storedTasks
+            }
+            return tasks
+        }
+    }
+)
+
 const setTaskState = (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
     if(typeof action.payload !== 'undefined' && action.payload !== null)
-        console.log('setTaskState action.payload: ', action.payload)
         return action.payload
     return null
 }
@@ -87,6 +106,9 @@ const taskSlice = createSlice({
             return setTaskState(state, action)
         }),
         builder.addCase(allCompletedTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
+            return setTaskState(state, action)
+        }),
+        builder.addCase(deleteTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
             return setTaskState(state, action)
         })
     }
