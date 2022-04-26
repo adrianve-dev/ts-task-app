@@ -30,10 +30,9 @@ export const addTask = createAsyncThunk<
     { task: string, place: string }
 >('tasks/add',
    async (args, thunkAPI) => {
-       console.log('add task: ', args.task)
-       const tasks = await asyncAddTask(args.task, args.place)
-       thunkAPI.dispatch(getCount())
-       return tasks
+        const tasks = await asyncAddTask(args.task, args.place)
+        thunkAPI.dispatch(getCount())
+        return tasks
    }
 )
 
