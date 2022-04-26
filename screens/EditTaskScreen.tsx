@@ -1,17 +1,15 @@
 import { useRef, useState } from "react"
-import { KeyboardAvoidingView, StyleSheet, Platform } from "react-native"
+import { KeyboardAvoidingView, Platform } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
 import { Text } from "../components/Themed"
 import { useAppDispatch } from "../hooks/reduxHooks"
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import useTheme from "../hooks/useTheme"
-import { addTask, updateTask } from "../redux"
+import { updateTask } from "../redux"
 import { colors, styles as myStyles } from "../styles"
-import { ReadonlyTask } from "../types"
-import { placeToDisplayString, placeToString, stringToPlace } from "../utils/utils"
+import { placeToString, stringToPlace } from "../utils/utils"
 import { RootStackParamList } from "../App"
 
-// TODO: update, comparison doesn't work because of placeToString..
 type AppProps = NativeStackScreenProps<RootStackParamList, 'EditTask'>
 
 export default function EditTaskScreen({ navigation, route }: AppProps) {
