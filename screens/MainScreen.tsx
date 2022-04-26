@@ -11,11 +11,12 @@ import { getCount, updateCountManually, getTasks, allCompletedTasks } from '../r
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../App'
+import useTheme from '../hooks/useTheme'
 
 type AppProps = NativeStackScreenProps<RootStackParamList, 'Tasks'>
 
 export default function MainScreen({navigation, route} : AppProps) {
-
+  const theme = useTheme()
   const dispatch = useAppDispatch()
   const taskCount = useAppSelector(state => state.count)
   const allStoredTasks = useAppSelector(state => state.tasks)
@@ -74,7 +75,7 @@ export default function MainScreen({navigation, route} : AppProps) {
   
 
   return (
-      <SafeAreaView style={[styles.container, {backgroundColor: colors.reactDarkBackground}]}>
+      <SafeAreaView style={[styles.container, {backgroundColor: theme.backgroundColor}]}>
         <View style={styles.list}>
           {hasTasks(allStoredTasks) ? <FlatList<ReadonlyTask | CompletedTask>
               data={DATA}
