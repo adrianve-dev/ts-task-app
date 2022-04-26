@@ -152,16 +152,13 @@ const countSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getCount.fulfilled, (state:CountState, action: PayloadAction<number | null | undefined>) => {
-                if(typeof action.payload !== 'undefined')
-                    return setCountState(state, action)
+            return setCountState(state, action)
             }),
         builder.addCase(updateCount.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
-            if(typeof action.payload !== 'undefined')
-                return setCountState(state, action)
+            return setCountState(state, action)
         })),
         builder.addCase(updateCountManually.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
-            if(typeof action.payload !== 'undefined')
-                return setCountState(state, action)
+            return setCountState(state, action)
         }))
     }
 })
