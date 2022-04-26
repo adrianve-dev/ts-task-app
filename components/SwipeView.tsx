@@ -1,17 +1,18 @@
-import { BorderlessButton } from 'react-native-gesture-handler';
 import { View, Text } from './Themed'
-import { styles, appStyles } from '../styles'
+import { appStyles } from '../styles'
 import useTheme from '../hooks/useTheme';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface SwipeViewProps {
     iconPosition: 'left' | 'right'
+    icon?: typeof Ionicons['defaultProps']
     color?: string
     backgroundColor?: string
     text?: string
     size?: number
 }
 export default (props: SwipeViewProps) => {
-    const { iconPosition, color, backgroundColor, text, size } = props
+    const { iconPosition, icon, color, backgroundColor, text, size } = props
     const theme = useTheme()
     const alignment = iconPosition === 'left' ? 'flex-start' : 'flex-end'
     const appliedColor = color ? color : theme.color
@@ -21,9 +22,12 @@ export default (props: SwipeViewProps) => {
     
     return(
             <View style={[{flex: 1, alignItems: alignment, justifyContent: 'center', backgroundColor: appliedBgColor, paddingLeft: appliedSize, paddingRight: appliedSize,}]}>
-                <Text style={{color: appliedColor}}>
-                    {appliedText}
-                </Text>
+                <View style={{flex: 1, alignItems:'center', justifyContent:'center', backgroundColor: appliedBgColor,}}>
+                    {icon && <Ionicons name={icon} color={appliedColor} size={20} style={[{paddingTop: 5, paddingBottom: 1}]} />}
+                    {text && <Text style={{color: appliedColor}}>
+                        {appliedText}
+                    </Text>}
+                </View>
             </View>
     )
 }
