@@ -3,12 +3,15 @@ import { KeyboardAvoidingView, StyleSheet, Platform } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
 import { Text } from "../components/Themed"
 import { useAppDispatch } from "../hooks/reduxHooks"
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { RootStackParamList } from "../App"
 import useTheme from "../hooks/useTheme"
 import { addTask } from "../redux"
 import { colors, styles as myStyles } from "../styles"
 
+type AppProps = NativeStackScreenProps<RootStackParamList, 'AddTask'>
 
-export default function AddTaskScreen() {
+export default function AddTaskScreen({ navigation, route }: AppProps) {
     const [taskText, setTaskText] = useState<string>('')
     const [placeText, setPlaceText] = useState<string>('')
     const theme = useTheme()
@@ -16,7 +19,10 @@ export default function AddTaskScreen() {
     const placeInput = useRef<TextInput>(null)
 
     const addToStore = () => {
-        if(taskText) dispatch(addTask({task: taskText, place: placeText}))
+        if(taskText) {
+            dispatch(addTask({task: taskText, place: placeText}))
+            navigation.goBack()
+        }
     }
 
     return (
@@ -24,7 +30,7 @@ export default function AddTaskScreen() {
             behavior={Platform.OS === "ios" ? "padding" : "height"} 
             style={[{flex:1, backgroundColor: theme.backgroundColor,}]}
         >
-            <Text style={[myStyles.fontSubtitle, styles.label, {color:colors.muted}]}>Task:</Text>
+            <Text style={[myStyles.fontSubtitle, myStyles.label, {color:colors.muted}]}>Task:</Text>
             <TextInput 
                 style={[myStyles.fontMain, myStyles.input, {color: theme.color, borderBottomColor: theme.color}]} 
                 autoFocus={true}
@@ -34,7 +40,7 @@ export default function AddTaskScreen() {
                 onChangeText={setTaskText} 
                 onSubmitEditing={() => placeInput.current?.focus()}
             />
-            <Text style={[myStyles.fontSubtitle, styles.label, {color:colors.muted}]}>Place (Optional):</Text>
+            <Text style={[myStyles.fontSubtitle, myStyles.label, {color:colors.muted}]}>Place (Optional):</Text>
             <TextInput
                 ref={placeInput}
                 style={[myStyles.fontMain, myStyles.input, {color: theme.color, borderBottomColor: theme.color}]} 
@@ -47,10 +53,3 @@ export default function AddTaskScreen() {
         </KeyboardAvoidingView>
     )
 }
-
-const styles = StyleSheet.create({
-    label: {
-        margin: 15,
-        marginTop: 30,
-    },
-})
