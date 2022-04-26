@@ -45,7 +45,7 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
             behavior={Platform.OS === "ios" ? "padding" : "height"} 
             style={[{flex:1, backgroundColor: theme.backgroundColor,}]}
         >
-            <Text style={[myStyles.fontSubtitle, styles.label, {color:colors.muted}]}>Task:</Text>
+            <Text style={[myStyles.fontSubtitle, myStyles.label, {color:colors.muted}]}>Task:</Text>
             <TextInput 
                 style={[myStyles.fontMain, myStyles.input, {color: theme.color, borderBottomColor: theme.color}]} 
                 autoFocus={true}
@@ -56,7 +56,7 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
                 onChangeText={setTaskText} 
                 onSubmitEditing={() => placeInput.current?.focus()}
             />
-            <Text style={[myStyles.fontSubtitle, styles.label, {color:colors.muted}]}>Place (Optional):</Text>
+            <Text style={[myStyles.fontSubtitle, myStyles.label, {color:colors.muted}]}>Place (Optional):</Text>
             <TextInput
                 ref={placeInput}
                 style={[myStyles.fontMain, myStyles.input, {color: theme.color, borderBottomColor: theme.color}]} 
@@ -70,10 +70,3 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
         </KeyboardAvoidingView>
     )
 }
-
-const styles = StyleSheet.create({
-    label: {
-        margin: 15,
-        marginTop: 30,
-    },
-})

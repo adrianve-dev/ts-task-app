@@ -54,5 +54,9 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor:'transparent',
         padding:20
-    }
+    },
+    label: {
+        margin: 15,
+        marginTop: 30,
+    },
 })
