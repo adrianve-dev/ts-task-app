@@ -7,7 +7,7 @@ import { completeAll, toggleTask } from '../utils/utils'
 import { BorderlessButton } from 'react-native-gesture-handler'
 import { asyncDeleteData } from '../utils/api'
 import { colors } from '../styles'
-import { getCount, updateCount, updateCountManually, getTasks, addTask, updateTasks, completeTask, updateTask, allCompletedTasks } from '../redux'
+import { getCount, updateCountManually, getTasks, allCompletedTasks } from '../redux'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../App'
@@ -15,19 +15,14 @@ import { RootStackParamList } from '../App'
 type AppProps = NativeStackScreenProps<RootStackParamList, 'Tasks'>
 
 export default function MainScreen({navigation, route} : AppProps) {
-  // key: number but storedKeys stored as key: string
-  // handleToggleTask throws type error when change above to : string 
-  const [tasks, setTasks] = React.useState<{[key:number]: ReadonlyTask}>({
-  })
 
-  const [taskAdded, setTaskAdded] = React.useState<boolean>(false)
   const dispatch = useAppDispatch()
   const taskCount = useAppSelector(state => state.count)
   const allStoredTasks = useAppSelector(state => state.tasks)
   
-  // console.log('allStoredTasks: ', allStoredTasks)
-  // console.log('taskCount: ', taskCount)
-//   asyncDeleteData()
+  console.log('allStoredTasks: ', allStoredTasks)
+  console.log('taskCount: ', taskCount)
+  // asyncDeleteData()
 
   const showAddTaskModal = async () => {
     navigation.navigate('AddTask')
@@ -51,38 +46,18 @@ export default function MainScreen({navigation, route} : AppProps) {
     return allTasks
   }
 
-  // update state on add task
-  React.useEffect(() => {
-    const updateData = async () => {
-        dispatch(getTasks())
-
-        const allTasks = Object.assign({}, tasks, taskCount)
-        if(Object.keys(allTasks).length > Object.keys(tasks).length) setTasks(allTasks)
-        setTaskAdded(false)
-    }
-
-    if(taskAdded) {
-      updateData()
-    }
-  }, [taskAdded])
-
   // initialize data on load
   React.useEffect(() => {
-    const initData = async () => {
-      dispatch(getTasks())
-      dispatch(getCount())
-      
-      if(taskCount === null) {
-        if(allStoredTasks === null || typeof allStoredTasks === 'undefined'){
-          dispatch(updateCountManually('0'))
-        } else {
-          dispatch(updateCountManually(Object.keys(allStoredTasks).length.toString()))
-        }
+    // get initial data from local storage
+    dispatch(getTasks())
+    dispatch(getCount())
+    
+    if(taskCount === null) {
+      // no taskCount and no stored tasks means brand new open
+      if(allStoredTasks === null || typeof allStoredTasks === 'undefined'){
+        dispatch(updateCountManually('0'))
       }
-
-      dispatch(getCount())
     }
-    initData()
   }, [])
 
   const hasTasks = (data: StoredTask | null | undefined) => {
