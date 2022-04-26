@@ -22,8 +22,8 @@ export default function MainScreen({navigation, route} : AppProps) {
 
   const [taskAdded, setTaskAdded] = React.useState<boolean>(false)
   const dispatch = useAppDispatch()
-  const taskCount = useAppSelector(state => state.count.count)
-  const allStoredTasks = useAppSelector(state => state.tasks.tasks)
+  const taskCount = useAppSelector(state => state.count)
+  const allStoredTasks = useAppSelector(state => state.tasks)
   
   console.log('allStoredTasks: ', allStoredTasks)
   console.log('taskCount: ', taskCount)

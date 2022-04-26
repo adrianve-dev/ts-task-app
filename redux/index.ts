@@ -4,13 +4,9 @@ import thunk, { ThunkMiddleware } from 'redux-thunk'
 import { asyncUpdateTasks, asyncUpdateTaskCount, getStoredTasks, getTaskCount, asyncAddTask, asyncUpdateTask, asyncStoreCompletedTask, asyncStoreAllCompletedTasks } from "../utils/api"
 
 
-interface TasksState {
-    tasks: StoredTask | null | undefined
-}
+type TasksState = StoredTask | null | undefined
 
-const taskState = { 
-    tasks: null
-} as TasksState
+const taskState = null as TasksState
 
 export const getTasks = createAsyncThunk<
     StoredTask | null | undefined
@@ -34,6 +30,7 @@ export const addTask = createAsyncThunk<
     { task: string, place: string }
 >('tasks/add',
    async (args, thunkAPI) => {
+       console.log('add task: ', args.task)
        return await asyncAddTask(args.task, args.place)
    }
 )
@@ -64,6 +61,7 @@ export const allCompletedTasks = createAsyncThunk<
 
 const setTaskState = (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
     if(typeof action.payload !== 'undefined' && action.payload !== null)
+        console.log('setTaskState action.payload: ', action.payload)
         return action.payload
     return null
 }
@@ -74,33 +72,31 @@ const taskSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            state.tasks = setTaskState(state, action)
+            return setTaskState(state, action)
         }),
         builder.addCase(addTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            state.tasks = setTaskState(state, action)
+            return setTaskState(state, action)
         }),
         builder.addCase(updateTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            state.tasks = setTaskState(state, action)
+            return setTaskState(state, action)
         }),
         builder.addCase(updateTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            state.tasks = setTaskState(state, action)
+            return setTaskState(state, action)
         }),
         builder.addCase(completeTask.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            state.tasks = setTaskState(state, action)
+            return setTaskState(state, action)
         }),
         builder.addCase(allCompletedTasks.fulfilled, (state: TasksState, action: PayloadAction<StoredTask | null | undefined>) => {
-            state.tasks = setTaskState(state, action)
+            return setTaskState(state, action)
         })
     }
 })
 
 export const taskReducer = taskSlice.reducer
 
-interface CountState {
-    count: number | null
-}
+type CountState = number | null
 
-const countState = { count: 0 } as CountState
+const countState = 0 as CountState
 
 export const getCount = createAsyncThunk<number | null | undefined>(
     'count/getCount',
@@ -136,15 +132,15 @@ const countSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getCount.fulfilled, (state:CountState, action: PayloadAction<number | null | undefined>) => {
                 if(typeof action.payload !== 'undefined')
-                    state.count = setCountState(state, action)
+                    return setCountState(state, action)
             }),
         builder.addCase(updateCount.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
             if(typeof action.payload !== 'undefined')
-                state.count = setCountState(state, action)
+                return setCountState(state, action)
         })),
         builder.addCase(updateCountManually.fulfilled, ((state:CountState, action: PayloadAction<number | null | undefined>) => {
             if(typeof action.payload !== 'undefined')
-                state.count = setCountState(state, action)
+                return setCountState(state, action)
         }))
     }
 })
