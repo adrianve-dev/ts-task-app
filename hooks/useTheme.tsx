@@ -10,7 +10,7 @@ const useTheme = (): Theme => {
 
     // return color scheme
     switch(customTheme) {
-        case THEME_KEYS.REACT: return ReactTheme['dark']
+        case THEME_KEYS.REACT: return ReactTheme[colorScheme]
         default: return DefaultTheme[colorScheme]
     }
 }

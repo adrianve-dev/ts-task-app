@@ -36,7 +36,7 @@ const DefaultTheme: FullTheme = {
 const ReactTheme: FullTheme = {
     light: {
         color: 'black',
-        backgroundColor: colors.reactDarkBackground,
+        backgroundColor: colors.reactLightBackground,
     },
     dark: {
         color: 'white',

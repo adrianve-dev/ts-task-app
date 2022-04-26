@@ -13,7 +13,7 @@ export const colors = {
     palePurple: '#77f',
     paleRed: '#f77',
     reactDarkBackground: '#282c34',
-    reactLightBackground: '#61dafb',
+    reactLightBackground: '#fff',
     red: '#dc3545',
 }
 
