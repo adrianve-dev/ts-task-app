@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { TaskProps, CompletedTaskProps, ReadonlyTask as ReadonlyTaskType, CompletedTask as CompletedTaskType, Place } from '../types'
 import { Text, View } from './Themed'
 import { getPlaceElement } from './Place'
@@ -11,7 +12,8 @@ import { RootStackParamList } from '../App'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import useTheme from '../hooks/useTheme'
 import { useAppDispatch } from '../hooks/reduxHooks'
-import { deleteTask } from '../redux'
+import { completeTask, deleteTask, updateTask } from '../redux'
+import { toggleTask } from '../utils/utils'
 
 const LeftSwipeAction = () => {
     const icon = Platform.OS === "ios" ? "ios-checkmark-sharp" : "md-checkmark"
@@ -20,31 +22,46 @@ const LeftSwipeAction = () => {
     )
 }
 
-export const Task = (props: TaskProps & {toggle: Function}) => {
+export const Task = (props: TaskProps) => {
     type AppProps = NativeStackNavigationProp<RootStackParamList, 'EditTask'>
     const theme = useTheme()
     const nav = useNavigation<AppProps>()
     const dispatch = useAppDispatch()
-    const { style, task, toggle, ...otherProps } = props
+    const swipeable = React.useRef<Swipeable>(null)
+    const { style, task, ...otherProps } = props
 
     const swipeFromLeftOpen = () => {
-        toggle(task)
+        const updatedTask = toggleTask(task)
+        
+        if(updatedTask.done) dispatch(completeTask(updatedTask as CompletedTaskType))
+        else dispatch(updateTask(updatedTask))
+    }
+
+    const deleteTaskOnPress = () => {
+        swipeable.current?.close()
+        dispatch(deleteTask(task.id))
+    }
+
+    const showEditTaskModal = () => {
+        swipeable.current?.close()
+        nav.navigate('EditTask', {task: task})
     }
 
     return (
             <Swipeable
+                ref={swipeable}
                 renderLeftActions={LeftSwipeAction}
                 onSwipeableLeftWillOpen={swipeFromLeftOpen}
                 renderRightActions={() => {
                     return (
                         <>
-                            <SwipeButton onPress={() => dispatch(deleteTask(task.id))} text={'Delete'} icon={'md-trash'} color={theme.color} backgroundColor={colors.paleRed} ></SwipeButton>
-                            <SwipeButton onPress={() => nav.navigate('EditTask', {task: task})} icon={'md-pencil'} text={'Edit'}  color={theme.color} ></SwipeButton>
+                            <SwipeButton onPress={() => deleteTaskOnPress()} text={'Delete'} icon={'md-trash'} color={theme.color} backgroundColor={colors.paleRed} ></SwipeButton>
+                            <SwipeButton onPress={() => showEditTaskModal()} icon={'md-pencil'} text={'Edit'}  color={theme.color} ></SwipeButton>
                         </>
                     )
                 }}
             >
-                <Pressable onPress={() => nav.navigate('EditTask', {task: task})}>
+                <Pressable onPress={() => showEditTaskModal()}>
                     <View style={[styles.taskList]}>
                         <Text style={[styles.fontMain]}>
                             {task.text}
@@ -56,21 +73,27 @@ export const Task = (props: TaskProps & {toggle: Function}) => {
     )
 }
 
-export const CompletedTask = (props: CompletedTaskProps & {toggle: Function}) => {
-    const { style, task, toggle, ...otherProps } = props
+export const CompletedTask = (props: CompletedTaskProps) => {
+    const { style, task, ...otherProps } = props
     const theme = useTheme()
     const dispatch = useAppDispatch()
+    const swipeable = React.useRef<Swipeable>(null)
 
     const swipeFromLeftOpen = () => {
-        toggle(task)
+        const updatedTask = toggleTask(task)
+        
+        if(updatedTask.done) dispatch(completeTask(updatedTask as CompletedTaskType))
+        else dispatch(updateTask(updatedTask))
     }
 
     const swipeFromRightOpen = () => {
+        swipeable.current?.close()
         dispatch(deleteTask(task.id))
     }
     
     return (
         <Swipeable
+            ref={swipeable}
             renderLeftActions={LeftSwipeAction}
             onSwipeableLeftWillOpen={swipeFromLeftOpen}
             onSwipeableRightOpen={swipeFromRightOpen}
@@ -92,10 +115,10 @@ export const CompletedTask = (props: CompletedTaskProps & {toggle: Function}) =>
     )
 }
 
-export const getTaskElement = (task: ReadonlyTaskType | CompletedTaskType, handleToggleTask: Function) => {
+export const getTaskElement = (task: ReadonlyTaskType | CompletedTaskType) => {
     if(!task.done) {
-        return <Task task={task as ReadonlyTaskType} toggle={handleToggleTask} />
+        return <Task task={task as ReadonlyTaskType} />
     } else {
-        return <CompletedTask task={task as CompletedTaskType} toggle={handleToggleTask} />
+        return <CompletedTask task={task as CompletedTaskType} />
     }
 }

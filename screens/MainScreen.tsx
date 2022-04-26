@@ -25,11 +25,11 @@ export default function MainScreen({navigation, route} : AppProps) {
   const taskCount = useAppSelector(state => state.count)
   const allStoredTasks = useAppSelector(state => state.tasks)
   
-  console.log('allStoredTasks: ', allStoredTasks)
-  console.log('taskCount: ', taskCount)
+  // console.log('allStoredTasks: ', allStoredTasks)
+  // console.log('taskCount: ', taskCount)
 //   asyncDeleteData()
 
-  const addTaskToStore = async () => {
+  const showAddTaskModal = async () => {
     navigation.navigate('AddTask')
   }
 
@@ -49,13 +49,6 @@ export default function MainScreen({navigation, route} : AppProps) {
         })
     }
     return allTasks
-  }  
-
-  const handleToggleTask = (task: ReadonlyTask) => {
-    const updatedTask: ReadonlyTask = toggleTask(task)
-    
-    if(updatedTask.done) dispatch(completeTask(updatedTask as CompletedTask))
-    else dispatch(updateTask(updatedTask))
   }
 
   // update state on add task
@@ -76,7 +69,6 @@ export default function MainScreen({navigation, route} : AppProps) {
   // initialize data on load
   React.useEffect(() => {
     const initData = async () => {
-      console.log('init data')
       dispatch(getTasks())
       dispatch(getCount())
       
@@ -95,7 +87,7 @@ export default function MainScreen({navigation, route} : AppProps) {
 
   const hasTasks = (data: StoredTask | null | undefined) => {
     if(data !== null && typeof data !== 'undefined') {
-        return Object.keys(allStoredTasks as StoredTask).length > 0
+        return Object.keys(data).length > 0
     } else {
         return false
     }
@@ -103,7 +95,7 @@ export default function MainScreen({navigation, route} : AppProps) {
   
   const DATA: ReadonlyTask[] = formatData(allStoredTasks)
 
-  const renderItem: ListRenderItem<ReadonlyTask | CompletedTask> = ({ item, index }) => getTaskElement(item, handleToggleTask)
+  const renderItem: ListRenderItem<ReadonlyTask | CompletedTask> = ({ item, index }) => getTaskElement(item)
   
 
   return (
@@ -124,7 +116,7 @@ export default function MainScreen({navigation, route} : AppProps) {
                 </Text>
             </View>
         </Pressable>
-        <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => addTaskToStore()} >
+        <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => showAddTaskModal()} >
           <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.blue, borderRadius: 10,}]}>
                 <Text style={{fontSize: 18}}>
                     Add Task
