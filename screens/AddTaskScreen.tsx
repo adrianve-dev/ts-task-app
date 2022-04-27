@@ -21,7 +21,7 @@ export default function AddTaskScreen({ navigation, route }: AppProps) {
     const placeInput = useRef<TextInput>(null)
 
     const addToStore = () => {
-        if(taskText) {
+        if(taskText.trim()) {
             dispatch(addTask({task: taskText, place: placeText}))
             navigation.goBack()
         }

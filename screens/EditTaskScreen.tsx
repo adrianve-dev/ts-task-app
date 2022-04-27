@@ -27,7 +27,7 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
 
     const addToStore = () => {
         // task exists
-        if(taskText) {
+        if(taskText.trim()) {
             // has changed
             if(taskText !== task.text || placeText !== task.place)
                 dispatch(updateTask({
