@@ -22,7 +22,7 @@ export default function AddTaskScreen({ navigation, route }: AppProps) {
 
     const addToStore = () => {
         if(taskText.trim()) {
-            dispatch(addTask({task: taskText, place: placeText}))
+            dispatch(addTask({task: taskText.trim(), place: placeText.trim()}))
             navigation.goBack()
         }
     }
