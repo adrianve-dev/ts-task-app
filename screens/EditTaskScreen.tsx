@@ -10,6 +10,7 @@ import { updateTask } from "../redux"
 import { colors, styles as myStyles } from "../styles"
 import { placeToString, stringToPlace } from "../utils/utils"
 import { RootStackParamList } from "../App"
+import { ReadonlyTask } from "../types";
 
 type AppProps = NativeStackScreenProps<RootStackParamList, 'EditTask'>
 
@@ -25,18 +26,31 @@ export default function EditTaskScreen({ navigation, route }: AppProps) {
     const dispatch = useAppDispatch()
     const placeInput = useRef<TextInput>(null)
 
+    const dispatchUpdateTask = (task: ReadonlyTask, place: string) => {
+        if(!place) {
+            dispatch(updateTask(task))
+        } else {
+            dispatch(updateTask(
+                Object.assign(
+                    {}, task, { place: stringToPlace(place) }
+                )))
+        }
+    }
+
     const addToStore = () => {
+        const trimmedTask = taskText.trim()
+        const trimmedPlace = placeText.toLowerCase().trim()
         // task exists
-        if(taskText.trim()) {
-            // has changed
-            if(taskText !== task.text || placeText !== task.place)
-                dispatch(updateTask({
-                    id: task.id,
-                    text: taskText,
-                    done: task.done,
-                    place: stringToPlace(placeText)
-                }))
+        if(trimmedTask) {
+            // if task has changed or place has changed
+            if(trimmedTask !== task.text || trimmedPlace !== currentPlace) {
+                dispatchUpdateTask({
+                    id: task.id, 
+                    text: trimmedTask, 
+                    done: task.done
+                }, trimmedPlace)
                 navigation.goBack()
+            }
         }
     }
 
