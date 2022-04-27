@@ -75,7 +75,10 @@ export const asyncStoreCompletedTask = async (task: CompletedTask): Promise<Stor
 
 export const asyncUpdateTask = async (task: ReadonlyTask): Promise<StoredTask | null | undefined> => {
     try {
-        return await saveTask(task)
+        const storedTasks = await getStoredTasks()
+        const updatedTasks = Object.assign({}, storedTasks, { [task.id.toString()]: task })
+        await asyncUpdateTasks(updatedTasks)
+        return getStoredTasks()
     } catch (e) {
         Alert.alert('Failed to update Task')
     }
