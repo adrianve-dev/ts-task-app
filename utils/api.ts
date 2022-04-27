@@ -97,7 +97,8 @@ const saveTask = async (task: ReadonlyTask) => {
 export const getTaskCount = async (): Promise<number | null | undefined> => {
     try {
         const jsonValue = await AsyncStorage.getItem(TASK_COUNTER)
-        return jsonValue !== null ? parseInt(jsonValue) : null
+        // null only on first load or if db deleted
+        return jsonValue !== null ? parseInt(jsonValue) : 0
     } catch (e) {
         Alert.alert('Failed to get task count')
     }
