@@ -55,7 +55,7 @@ export const Task = (props: TaskProps) => {
                 renderRightActions={() => {
                     return (
                         <>
-                            <SwipeButton onPress={() => deleteTaskOnPress()} text={'Delete'} icon={'md-trash'} color={theme.color} backgroundColor={colors.paleRed} ></SwipeButton>
+                            <SwipeButton onPress={() => deleteTaskOnPress()} text={'Delete'} icon={'md-trash'} color={'white'} backgroundColor={colors.paleRed} ></SwipeButton>
                             <SwipeButton onPress={() => showEditTaskModal()} icon={'md-pencil'} text={'Edit'}  color={theme.color} ></SwipeButton>
                         </>
                     )

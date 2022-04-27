@@ -94,7 +94,7 @@ export default function MainScreen({navigation, route} : AppProps) {
         </Pressable>
         <BorderlessButton style={{flex:1, marginLeft: 10, marginRight: 10,}} onPress={() => showAddTaskModal()} >
           <View style={[{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.blue, borderRadius: 10,}]}>
-                <Text style={{fontSize: 18}}>
+                <Text style={{color: 'white', fontSize: 18}}>
                     Add Task
                 </Text>
             </View>
