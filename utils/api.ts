@@ -49,7 +49,7 @@ export const asyncUpdateTasks = async (tasks: StoredTask): Promise<StoredTask | 
     try {
         await AsyncStorage.setItem(TASKS_STORAGE_KEY,
             JSON.stringify(tasks))
-        return getStoredTasks()
+        return await getStoredTasks()
     } catch (e) {
         Alert.alert('Failed to update Tasks') 
     }
@@ -59,7 +59,7 @@ export const asyncStoreAllCompletedTasks = async (tasks: StoredCompletedTask): P
     try {
         await AsyncStorage.setItem(TASKS_STORAGE_KEY,
             JSON.stringify(tasks))
-        return getStoredTasks()
+        return await getStoredTasks()
     } catch (e) {
         Alert.alert('Failed to update completed Tasks')
     }
@@ -78,7 +78,7 @@ export const asyncUpdateTask = async (task: ReadonlyTask): Promise<StoredTask | 
         const storedTasks = await getStoredTasks()
         const updatedTasks = Object.assign({}, storedTasks, { [task.id.toString()]: task })
         await asyncUpdateTasks(updatedTasks)
-        return getStoredTasks()
+        return await getStoredTasks()
     } catch (e) {
         Alert.alert('Failed to update Task')
     }
@@ -90,7 +90,7 @@ const saveTask = async (task: ReadonlyTask) => {
             [task.id.toString()]: task
         })
     )
-    return getStoredTasks()
+    return await getStoredTasks()
 }
 
 //#endregion
@@ -125,7 +125,7 @@ export const asyncUpdateTaskCount = async (taskCount?: string) => {
             const value = (count + 1).toString()
             await AsyncStorage.setItem(TASK_COUNTER, value)
         }
-        return getTaskCount()
+        return await getTaskCount()
     } catch (e) {
         Alert.alert('Failed to update task count') 
     }
