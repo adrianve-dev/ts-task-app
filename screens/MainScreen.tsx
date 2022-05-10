@@ -21,8 +21,8 @@ export default function MainScreen({navigation, route} : AppProps) {
   const taskCount = useAppSelector(state => state.count)
   const allStoredTasks = useAppSelector(state => state.tasks)
   
-  console.log('allStoredTasks: ', allStoredTasks)
-  console.log('taskCount: ', taskCount)
+  // console.log('allStoredTasks: ', allStoredTasks)
+  // console.log('taskCount: ', taskCount)
   // asyncDeleteData()
 
   const showAddTaskModal = async () => {
