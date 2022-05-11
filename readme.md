@@ -3,7 +3,7 @@
 
 A Task List mobile app built using TypeScript and React Native with Expo.
 
-It is the mobile of version of a [task list web app][ts-web] hosted [here](avtaskapp.netlify.app) that is made with Typescript and React.
+It is the mobile of version of a [task list web app][ts-web] hosted [here](https://avtaskapp.netlify.app) that is made with Typescript and React.
 
 ![task-list]
 
